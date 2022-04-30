@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student registration</title>
+    <style>
+      .pb {
+        padding-bottom: 10px;
+      }
+      .d-none {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <ul>
+        <li onclick="navigateTo('index')">index</li>
+        <li onclick="navigateTo('add')">add</li>
+      </ul>
+    </nav>
+    <div class="route" id="index">index</div>
+    <div class="route d-none" id="add">
+      <div class="pb">
+        <label for="firstName">firstName</label>
+        <input id="firstName" type="text" />
+      </div>
+      <div class="pb">
+        <label for="lastName">lastName</label>
+        <input id="lastName" type="text" />
+      </div>
+      <div class="pb">
+        <label for="age">age</label>
+        <input id="age" type="number" />
+      </div>
+      <div class="pb">
+        <span>gender</span>
+        <input name="gender" id="male" type="radio" />
+        <label for="male">male</label>
+        <input name="gender" id="female" type="radio" />
+        <label for="female">female</label>
+        <input name="gender" id="other" type="radio" />
+        <label for="other">other</label>
+        <button>Add student</button>
+      </div>
+    </div>
+    <script>
+      const navigateTo = (routeId) => {
+        const routes = document.querySelectorAll(".route");
+        routes.forEach((route) => {
+          route.style.display = "none";
+          if (routeId === route.id) route.style.display = "block";
+        });
+      };
+    </script>
+  </body>
+</html>
