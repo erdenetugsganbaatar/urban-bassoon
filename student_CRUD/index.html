@@ -12,6 +12,19 @@
       .d-none {
         display: none;
       }
+      .student {
+        background-color: rgb(210, 245, 255);
+        padding: 10px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        position: relative;
+      }
+      .student .delete-btn {
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
@@ -21,7 +34,9 @@
         <li onclick="navigateTo('add', 'new student')">add</li>
       </ul>
     </nav>
-    <div class="route" id="index">index</div>
+    <div class="route" id="index">
+      <div id="indexContainer"></div>
+    </div>
     <div class="route d-none" id="add">
       <div class="pb">
         <label for="firstName">firstName</label>
@@ -37,7 +52,7 @@
       </div>
       <div class="pb">
         <span>gender</span>
-        <input name="gender" id="male" type="radio" />
+        <input name="gender" id="male" type="radio" checked />
         <label for="male">male</label>
         <input name="gender" id="female" type="radio" />
         <label for="female">female</label>
@@ -54,6 +69,31 @@
           route.style.display = "none";
           if (routeId === route.id) route.style.display = "block";
         });
+        renderStudents();
+      };
+      const renderStudents = () => {
+        const indexContainer = document.querySelector("#indexContainer");
+        const students = JSON.parse(localStorage.getItem("students"));
+        indexContainer.innerHTML = "";
+        students.forEach(({ id, firstName, lastName, age, gender }) => {
+          indexContainer.innerHTML += `
+          <div class="student">
+            <div class="delete-btn" onclick="deleteStudent(${id})">x</div>
+            <div>
+              firstname: ${firstName}
+            </div>
+            <div>
+              lastname: ${lastName}
+            </div>
+            <div>
+              age: ${age}
+            </div>
+            <div>
+              gender: ${gender}
+            </div>
+          </div>
+        `;
+        });
       };
       const addStudentClickHandler = () => {
         const firstName = document.querySelector("#firstName").value;
@@ -67,8 +107,27 @@
             if (!genderInput.checked) return;
             gender = genderInput.id;
           });
-        console.log(firstName, lastName, age, gender);
+        addStudent({ lastName, age, firstName, gender });
       };
+      const addStudent = ({ firstName, lastName, age, gender }) => {
+        const students = JSON.parse(localStorage.getItem("students") || "[]");
+        students.push({
+          id: students.length,
+          firstName,
+          lastName,
+          age,
+          gender,
+        });
+        localStorage.setItem("students", JSON.stringify(students));
+      };
+      const deleteStudent = (id) => {
+        const students = JSON.parse(localStorage.getItem("students") || "[]");
+        const index = students.findIndex((student) => student.id === id);
+        students.splice(index, 1);
+        localStorage.setItem("students", JSON.stringify(students));
+        renderStudents();
+      };
+      renderStudents();
     </script>
   </body>
 </html>
