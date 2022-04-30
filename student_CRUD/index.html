@@ -52,6 +52,30 @@
       </div>
       <div class="pb">
         <span>gender</span>
+        <input name="addGender" id="male" type="radio" checked />
+        <label for="male">male</label>
+        <input name="addGender" id="female" type="radio" />
+        <label for="female">female</label>
+        <input name="addGender" id="other" type="radio" />
+        <label for="other">other</label>
+      </div>
+      <button onclick="addStudentClickHandler()">Add student</button>
+    </div>
+    <div class="route d-none" id="edit">
+      <div class="pb">
+        <label for="firstName">firstName</label>
+        <input id="firstName" type="text" />
+      </div>
+      <div class="pb">
+        <label for="lastName">lastName</label>
+        <input id="lastName" type="text" />
+      </div>
+      <div class="pb">
+        <label for="age">age</label>
+        <input id="age" type="number" />
+      </div>
+      <div class="pb">
+        <span>gender</span>
         <input name="gender" id="male" type="radio" checked />
         <label for="male">male</label>
         <input name="gender" id="female" type="radio" />
@@ -59,7 +83,7 @@
         <input name="gender" id="other" type="radio" />
         <label for="other">other</label>
       </div>
-      <button onclick="addStudentClickHandler()">Add student</button>
+      <button onclick="editStudentClickHandler()">Edit student</button>
     </div>
     <script>
       const routes = document.querySelectorAll(".route");
@@ -73,7 +97,7 @@
       };
       const renderStudents = () => {
         const indexContainer = document.querySelector("#indexContainer");
-        const students = JSON.parse(localStorage.getItem("students"));
+        const students = JSON.parse(localStorage.getItem("students") || '[]');
         indexContainer.innerHTML = "";
         students.forEach(({ id, firstName, lastName, age, gender }) => {
           indexContainer.innerHTML += `
@@ -91,18 +115,19 @@
             <div>
               gender: ${gender}
             </div>
+            <button onclick="navigateToEdit(${id})">edit</button>
           </div>
         `;
         });
       };
       const addStudentClickHandler = () => {
-        const firstName = document.querySelector("#firstName").value;
-        const lastName = document.querySelector("#lastName").value;
-        const age = document.querySelector("#age").value;
+        const firstName = document.querySelector("#add #firstName").value;
+        const lastName = document.querySelector("#add #lastName").value;
+        const age = document.querySelector("#add #age").value;
         let gender;
 
         document
-          .querySelectorAll('input[name="gender"]')
+          .querySelectorAll('#add input[name="addGender"]')
           .forEach((genderInput) => {
             if (!genderInput.checked) return;
             gender = genderInput.id;
@@ -112,7 +137,7 @@
       const addStudent = ({ firstName, lastName, age, gender }) => {
         const students = JSON.parse(localStorage.getItem("students") || "[]");
         students.push({
-          id: students.length,
+          id: students[students.length - 1]?.id + 1 || 0,
           firstName,
           lastName,
           age,
@@ -126,6 +151,44 @@
         students.splice(index, 1);
         localStorage.setItem("students", JSON.stringify(students));
         renderStudents();
+      };
+      const navigateToEdit = (id) => {
+        navigateTo('edit','edit page')
+        document.querySelector('#edit').dataset.id = id
+        const students = JSON.parse(localStorage.getItem("students") || "[]");
+        const index = students.findIndex((student) => student.id === id);
+        const student = students[index]
+        document.querySelector("#edit #firstName").value = student.firstName;
+        document.querySelector("#edit #lastName").value = student.lastName;
+        document.querySelector("#edit #age").value = student.age;
+        document
+          .querySelectorAll('#edit input[name="gender"]')
+          .forEach((genderInput) => {
+            if(genderInput.id === student.gender) return genderInput.checked = true
+            genderInput.checked = false
+            
+          });
+      }
+      const editStudentClickHandler = () => {
+        const firstName = document.querySelector("#edit #firstName").value;
+        const lastName = document.querySelector("#edit #lastName").value;
+        const age = document.querySelector("#edit #age").value;
+        let gender;
+        const editPage = document.querySelector('#edit')
+        document
+          .querySelectorAll('#edit input[name="gender"]')
+          .forEach((genderInput) => {
+            if (!genderInput.checked) return;
+            gender = genderInput.id;
+          });
+        editStudent({ id: Number(editPage.dataset.id), lastName, age, firstName, gender });
+      };
+      const editStudent = ({ id, lastName, age, firstName, gender }) => {
+        const students = JSON.parse(localStorage.getItem("students") || "[]");
+        const index = students.findIndex((student) => student.id == id);
+        students[index] = {id, lastName, age, firstName, gender}
+        localStorage.setItem("students", JSON.stringify(students));
+        navigateTo('index','Student registration')
       };
       renderStudents();
     </script>
