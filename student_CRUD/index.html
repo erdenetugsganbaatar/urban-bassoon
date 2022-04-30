@@ -17,8 +17,8 @@
   <body>
     <nav>
       <ul>
-        <li onclick="navigateTo('index')">index</li>
-        <li onclick="navigateTo('add')">add</li>
+        <li onclick="navigateTo('index','Student registration')">index</li>
+        <li onclick="navigateTo('add', 'new student')">add</li>
       </ul>
     </nav>
     <div class="route" id="index">index</div>
@@ -43,16 +43,31 @@
         <label for="female">female</label>
         <input name="gender" id="other" type="radio" />
         <label for="other">other</label>
-        <button>Add student</button>
       </div>
+      <button onclick="addStudentClickHandler()">Add student</button>
     </div>
     <script>
-      const navigateTo = (routeId) => {
-        const routes = document.querySelectorAll(".route");
+      const routes = document.querySelectorAll(".route");
+      const navigateTo = (routeId, title) => {
+        document.querySelector("title").innerText = title;
         routes.forEach((route) => {
           route.style.display = "none";
           if (routeId === route.id) route.style.display = "block";
         });
+      };
+      const addStudentClickHandler = () => {
+        const firstName = document.querySelector("#firstName").value;
+        const lastName = document.querySelector("#lastName").value;
+        const age = document.querySelector("#age").value;
+        let gender;
+
+        document
+          .querySelectorAll('input[name="gender"]')
+          .forEach((genderInput) => {
+            if (!genderInput.checked) return;
+            gender = genderInput.id;
+          });
+        console.log(firstName, lastName, age, gender);
       };
     </script>
   </body>
